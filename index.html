@@ -1,0 +1,804 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nexus IT Services | Academic Pilot</title><meta name="description" content="Nexus IT Services academic pilot: cloud support, automation and a local ticket workflow demonstration."><style>
+    :root {
+      --bg-main: #050814;
+      --bg-elevated: #0b1020;
+      --bg-elevated-2: #10172b;
+      --accent-cyan: #28e0ff;
+      --accent-blue: #2f6bff;
+      --accent-purple: #a960ff;
+      --accent-orange: #ff8b3d;
+      --text-main: #f5f7ff;
+      --text-muted: #9ba3c6;
+      --text-faint: #64709a;
+      --success: #28ffa3;
+      --border-soft: rgba(40, 224, 255, 0.14);
+      --border-strong: rgba(40, 224, 255, 0.24);
+      --shadow-lg: 0 26px 80px rgba(0, 0, 0, 0.85);
+      --shadow-md: 0 18px 50px rgba(0, 0, 0, 0.72);
+      --radius-lg: 18px;
+      --radius-md: 14px;
+      --radius-pill: 999px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #101633 0, #050814 45%, #02030a 100%);
+      color: var(--text-main);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a, button, input, textarea {
+      transition: color 180ms ease, background 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    }
+
+    .page {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 1.5rem;
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: conic-gradient(from 160deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple), var(--accent-orange), var(--accent-cyan));
+      box-shadow: 0 0 18px rgba(40, 224, 255, 0.7);
+    }
+
+    .logo-text,
+    .footer-brand-title {
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.35rem;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a,
+    .footer-links a,
+    .footer-meta a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-links a:hover,
+    .footer-links a:hover,
+    .footer-meta a:hover {
+      color: var(--accent-cyan);
+    }
+
+    .nav-cta,
+    .button-secondary {
+      padding: 0.9rem 1.4rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(40, 224, 255, 0.4);
+      background: transparent;
+      color: var(--accent-cyan);
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button-primary,
+    .contact-submit {
+      background: linear-gradient(120deg, var(--accent-cyan), var(--accent-blue));
+      color: #020308;
+      border-radius: var(--radius-pill);
+      padding: 0.95rem 1.8rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 24px rgba(40, 224, 255, 0.52);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .button-primary:hover,
+    .contact-submit:hover,
+    .button-secondary:hover,
+    .nav-cta:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: flex;
+      align-items: center;
+      padding: 2.5rem 1.5rem 3rem;
+    }
+
+    .hero-inner,
+    .strategies-inner,
+    .team-inner,
+    .contact-inner,
+    .footer-inner {
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 3rem;
+    }
+
+    .hero-badge,
+    .strategy-pill,
+    .contact-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.22rem 0.8rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .hero-badge {
+      border: 1px solid rgba(169, 96, 255, 0.5);
+      background: rgba(169, 96, 255, 0.1);
+      color: var(--accent-purple);
+    }
+
+    .hero-badge-dot,
+    .strategy-pill-dot,
+    .contact-tag-dot,
+    .hero-badge-live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-orange), var(--accent-purple));
+    }
+
+    .hero-title,
+    .strategies-title,
+    .team-title,
+    .contact-title {
+      font-family: "Space Grotesk", system-ui, sans-serif;
+    }
+
+    .hero-title {
+      font-size: clamp(2.6rem, 4vw, 3.7rem);
+      line-height: 1.04;
+      margin-top: 1.2rem;
+      margin-bottom: 0;
+    }
+
+    .hero-title span {
+      background: linear-gradient(120deg, var(--accent-cyan), var(--accent-blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle,
+    .strategies-subtitle,
+    .team-subtitle,
+    .contact-subtitle,
+    .footer-brand-copy,
+    .footer-meta {
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+
+    .hero-actions,
+    .hero-metric-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.8rem;
+    }
+
+    .hero-actions { margin-top: 1.8rem; }
+    .hero-metric-row { margin-top: 2.2rem; }
+
+    .hero-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12rem;
+    }
+
+    .hero-metric-label,
+    .hero-ceos-title,
+    .hero-card-title,
+    .hero-card-metric-label,
+    .team-eyebrow,
+    .team-role,
+    .strategies-eyebrow,
+    .footer-column-title,
+    .footer-meta {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .hero-metric-value,
+    .hero-card-metric-value,
+    .strategy-name,
+    .team-name {
+      font-family: "Space Grotesk", system-ui, sans-serif;
+    }
+
+    .hero-metric-value { font-size: 1.08rem; }
+    .positive { color: var(--success); }
+
+    .hero-ceos {
+      margin-top: 2.6rem;
+      padding-top: 1.4rem;
+      border-top: 1px solid rgba(40, 224, 255, 0.25);
+    }
+
+    .hero-ceos-names { color: var(--accent-cyan); }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+    }
+
+    .hero-orbit {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      border: 1px dashed rgba(40, 224, 255, 0.4);
+      opacity: 0.7;
+    }
+
+    .hero-orbit.orbit-2 {
+      width: 360px;
+      height: 360px;
+      border-color: rgba(169, 96, 255, 0.35);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(40, 224, 255, 0.28), transparent 60%);
+      filter: blur(6px);
+    }
+
+    .hero-card,
+    .strategy-card,
+    .team-card,
+    .contact-form,
+    .contact-panel {
+      background: rgba(5, 8, 20, 0.96);
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-card {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      border-radius: var(--radius-lg);
+      padding: 1.3rem 1.25rem 1.2rem;
+      backdrop-filter: blur(20px);
+    }
+
+    .hero-card-header,
+    .hero-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .hero-card-header { margin-bottom: 0.6rem; }
+
+    .hero-badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+      background: rgba(40, 255, 163, 0.09);
+      border: 1px solid rgba(40, 255, 163, 0.6);
+      font-size: 0.7rem;
+      color: var(--success);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .hero-badge-live-dot {
+      background: radial-gradient(circle, #28ffa3, transparent);
+    }
+
+    .hero-chart {
+      height: 140px;
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(40, 224, 255, 0.35), transparent 55%),
+        radial-gradient(circle at 85% 80%, rgba(169, 96, 255, 0.4), transparent 55%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-chart-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 36px 36px;
+      opacity: 0.6;
+    }
+
+    .hero-chart-line {
+      position: absolute;
+      inset: 18px 12px 10px 12px;
+    }
+
+    .hero-chart-line svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .hero-card-footer {
+      margin-top: 0.8rem;
+      font-size: 0.78rem;
+      align-items: flex-end;
+    }
+
+    .hero-tag {
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-pill);
+      background: rgba(5, 8, 20, 0.9);
+      border: 1px solid rgba(40, 224, 255, 0.4);
+      color: var(--accent-cyan);
+      white-space: nowrap;
+    }
+
+    .strategies,
+    .team,
+    .contact,
+    .site-footer {
+      padding: 3.2rem 1.5rem;
+    }
+
+    .strategies {
+      background: radial-gradient(circle at top right, rgba(40, 224, 255, 0.16), transparent 60%);
+      border-top: 1px solid rgba(40, 224, 255, 0.08);
+      border-bottom: 1px solid rgba(40, 224, 255, 0.08);
+    }
+
+    .strategies-header,
+    .team-header,
+    .contact-copy {
+      max-width: 640px;
+    }
+
+    .strategies-title,
+    .team-title,
+    .contact-title {
+      font-size: clamp(1.8rem, 2.4vw, 2.1rem);
+      margin: 0 0 0.7rem;
+    }
+
+    .strategies-grid,
+    .team-grid {
+      display: grid;
+      gap: 1.45rem;
+      margin-top: 2rem;
+    }
+
+    .strategies-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .strategy-card,
+    .team-card,
+    .contact-form,
+    .contact-panel {
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+    }
+
+    .strategy-card {
+      padding: 1.3rem 1.2rem 1.15rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .strategy-pill {
+      border: 1px solid rgba(40, 224, 255, 0.4);
+      color: var(--accent-cyan);
+      margin-bottom: 0.65rem;
+    }
+
+    .strategy-pill-dot {
+      background: radial-gradient(circle, var(--accent-cyan), transparent);
+    }
+
+    .strategy-name {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
+    }
+
+    .strategy-desc,
+    .strategy-tagline,
+    .team-bio,
+    .contact-list,
+    .contact-note,
+    .footer-links,
+    .footer-note {
+      color: var(--text-muted);
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+
+    .strategy-tagline { color: var(--accent-purple); margin-top: 0.65rem; }
+
+    .strategy-glow {
+      position: absolute;
+      right: -40px;
+      bottom: -40px;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(40, 224, 255, 0.32), transparent 60%);
+      opacity: 0.58;
+    }
+
+    .team {
+      background: radial-gradient(circle at bottom right, rgba(169, 96, 255, 0.16), transparent 60%);
+    }
+
+    .team-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .team-card {
+      padding: 1.35rem 1.25rem;
+    }
+
+    .team-name {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .team-role {
+      margin: 0.2rem 0 0.55rem;
+    }
+
+    .team-card-image {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1.25rem;
+      border: 2px solid var(--border-soft);
+      display: block;
+    }
+
+    .malta-hub {
+      border-top: 1px solid rgba(40, 224, 255, 0.08);
+      background: radial-gradient(circle at top right, rgba(40, 224, 255, 0.08), transparent 60%);
+      padding: 3.5rem 1.5rem;
+    }
+
+    .malta-hub-inner {
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .malta-hub-header {
+      text-align: center;
+      margin-bottom: 2.8rem;
+    }
+
+    .malta-hub-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .malta-hub-title {
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 1.85rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+      color: var(--accent-cyan);
+    }
+
+    .malta-hub-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .malta-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .malta-feature {
+      background: rgba(5, 8, 20, 0.6);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .malta-feature-title {
+      font-weight: 600;
+      color: var(--accent-purple);
+      margin-bottom: 0.6rem;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .malta-feature-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .contact {
+      border-top: 1px solid rgba(40, 224, 255, 0.08);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255, 139, 61, 0.12), transparent 35%),
+        radial-gradient(circle at 85% 90%, rgba(40, 224, 255, 0.14), transparent 38%);
+    }
+
+    .contact-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: 1.6rem;
+      align-items: start;
+    }
+
+    .contact-tag {
+      border: 1px solid rgba(255, 139, 61, 0.32);
+      background: rgba(255, 139, 61, 0.08);
+      color: var(--accent-orange);
+      margin-bottom: 1rem;
+    }
+
+    .contact-tag-dot {
+      background: radial-gradient(circle, var(--accent-orange), transparent);
+    }
+
+    .contact-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.35rem 0 0;
+      display: grid;
+      gap: 0.95rem;
+    }
+
+    .contact-list strong {
+      display: block;
+      color: var(--text-main);
+      margin-bottom: 0.12rem;
+      font-size: 0.92rem;
+    }
+
+    .contact-panel,
+    .contact-form {
+      padding: 1.4rem;
+    }
+
+    .contact-panel {
+      margin-top: 1.2rem;
+    }
+
+    .contact-panel-title,
+    .contact-form-title {
+      margin: 0 0 0.5rem;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 1rem;
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .field {
+      display: grid;
+      gap: 0.45rem;
+    }
+
+    .field label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      border: 1px solid rgba(40, 224, 255, 0.18);
+      background: rgba(16, 23, 43, 0.92);
+      color: var(--text-main);
+      border-radius: 12px;
+      padding: 0.95rem 1rem;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: var(--text-faint);
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: rgba(40, 224, 255, 0.52);
+      box-shadow: 0 0 0 3px rgba(40, 224, 255, 0.12);
+    }
+
+    .field textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.9rem;
+      margin-top: 0.2rem;
+    }
+
+    .contact-note {
+      margin: 0;
+      max-width: 32ch;
+    }
+
+    .site-footer {
+      padding-top: 1.8rem;
+      padding-bottom: 2rem;
+      border-top: 1px solid rgba(40, 224, 255, 0.08);
+      background: rgba(2, 4, 10, 0.72);
+      backdrop-filter: blur(12px);
+    }
+
+    .footer-inner {
+      display: grid;
+      gap: 1.8rem;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(180px, 0.5fr));
+      gap: 1.8rem;
+      align-items: start;
+    }
+
+    .footer-brand {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .footer-brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .footer-column-title {
+      margin: 0 0 0.7rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 0.55rem;
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.9rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(40, 224, 255, 0.08);
+    }
+
+    .footer-meta {
+      margin: 0;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-note {
+      margin: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .strategies-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .contact-inner,
+      .footer-top { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 960px) {
+      .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 840px) {
+      .nav-links { display: none; }
+      .hero-inner { grid-template-columns: 1fr; gap: 2.3rem; }
+      .hero-visual { order: -1; min-height: 360px; }
+      .hero-card-footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 640px) {
+      .hero,
+      .strategies,
+      .team,
+      .contact,
+      .site-footer { padding-inline: 1rem; }
+      .strategies-grid,
+      .team-grid,
+      .form-row { grid-template-columns: 1fr; }
+      .nav { padding-inline: 1rem; }
+      .hero-title { font-size: clamp(2.2rem, 11vw, 3rem); }
+      .button-primary,
+      .button-secondary,
+      .contact-submit { width: 100%; }
+      .contact-actions { flex-direction: column; align-items: stretch; }
+      .footer-bottom { align-items: flex-start; }
+    }
+  main{max-width:1120px;margin:auto;padding:24px}section{padding:36px 0;scroll-margin-top:20px}h2{font-size:2rem}p,li{line-height:1.7;color:var(--text-muted)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.panel{background:var(--bg-elevated);border:1px solid var(--border-soft);padding:24px;border-radius:18px}.notice{padding:14px;border:1px solid var(--accent-orange);border-radius:12px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}td,th{padding:14px;text-align:left;border-bottom:1px solid var(--border-soft)}label{display:block;margin:12px 0}input,select,textarea{display:block;width:100%;padding:12px;background:#10172b;border:1px solid #64709a;border-radius:8px;color:white;font:inherit}button{cursor:pointer}a{color:var(--accent-cyan)}:focus-visible{outline:3px solid var(--accent-orange);outline-offset:3px}@media(max-width:750px){.grid{grid-template-columns:1fr}.nav{flex-wrap:wrap;gap:15px}.nav-links{flex-wrap:wrap}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}</style></head><body><div class="page"><nav class="nav" aria-label="Main navigation"><div class="nav-left"><div class="logo-mark" aria-hidden="true"></div><span class="logo-text">Nexus IT Services</span></div><div class="nav-links"><a href="#concept">Concept</a><a href="#pilot">Pilot</a><a href="#timeline">Timeline</a><a href="#demo">Ticket demo</a></div></nav><main><section><span class="hero-badge">Individual orientation project · Laurea</span><h1 class="hero-title">IT support built around<br><span>clear processes.</span></h1><p class="hero-subtitle">A student pilot exploring a subscription-based IT support concept for small and medium-sized businesses. Microsoft cloud administration, PowerShell automation and a documented support workflow.</p><div class="hero-actions"><a class="button-primary" href="#demo">Try the ticket demo</a><a class="button-secondary" href="#pilot">Explore the project</a></div><p class="notice">Educational concept, not an operational customer service. All demo data must be fictional. The pilot does not establish commercial viability or promise service availability.</p></section><section id="concept"><h2>The Nexus concept</h2><p>Developed by Charlles Pereira Costa from an IT support background, Nexus explores recurring support agreements. This academic project examines technical delivery in a small test environment before taking on real customers.</p><div class="grid"><article class="panel"><h3>Cloud operations</h3><p>Planned Microsoft 365 and Entra ID test environment with approximately ten fictional users and a small number of virtual machines.</p></article><article class="panel"><h3>Repeatable automation</h3><p>Planned PowerShell scripts for user and group administration, supported by documentation and test evidence.</p></article><article class="panel"><h3>Structured support</h3><p>A ticket template, support workflow, onboarding checklist and draft knowledge articles, evaluated with ten fictional cases.</p></article></div></section><section id="pilot"><h2>Pilot scope and deliverables</h2><div class="grid"><article class="panel"><h3>Deliverables</h3><ul><li>Updated service description and draft service levels</li><li>Documented test environment</li><li>PowerShell scripts and README</li><li>Support process and case records</li><li>Final report and continuation recommendation</li></ul></article><article class="panel"><h3>Outside this project</h3><ul><li>Real clients and personal information</li><li>Company registration and sales</li><li>Final pricing and contracts</li><li>Production ticketing and on-call support</li></ul></article><article class="panel"><h3>Project owner</h3><p>Charlles Pereira Costa<br>Individual project: planning, implementation, testing and reporting.</p><p>Institution: Laurea University of Applied Sciences. Supervisor’s spelling and final course dates must be confirmed before submission.</p></article></div><p>This webpage demonstrates only a local ticket workflow. It does not provision Microsoft services, execute PowerShell scripts or verify the wider pilot’s completion.</p></section><section id="timeline"><h2>Provisional eight-week roadmap</h2><p>Based on the updated plan; dates remain subject to the course schedule.</p><div class="table-wrap"><table><thead><tr><th>Week</th><th>Dates, 2026</th><th>Focus</th></tr></thead><tbody><tr><td>42</td><td>12–18 October</td><td>Plan, scope and risks</td></tr><tr><td>43</td><td>19–25 October</td><td>Service concept and environment feasibility</td></tr><tr><td>44</td><td>26 October–1 November</td><td>Test environment setup</td></tr><tr><td>45</td><td>2–8 November</td><td>PowerShell automation</td></tr><tr><td>46</td><td>9–15 November</td><td>Support process and documentation</td></tr><tr><td>47</td><td>16–22 November</td><td>Ten fictional support cases</td></tr><tr><td>48</td><td>23–29 November</td><td>Report and presentation draft</td></tr><tr><td>49</td><td>30 November–6 December</td><td>Buffer, finalization and submission</td></tr></tbody></table></div></section><section id="demo"><h2>Local ticket workflow demo</h2><p>Nothing is sent to Nexus or Microsoft. Tickets are stored only in this browser when storage is available. Do not enter real names, passwords or customer details.</p><div class="grid" style="grid-template-columns:1fr 1fr"><form id="ticket-form" class="panel"><h3>Create a fictional case</h3><label>Demo requester<input name="requester" required maxlength="80" placeholder="Demo User 01"></label><label>Category<select name="category"><option>Account access</option><option>Microsoft 365</option><option>Device</option><option>Network</option><option>Other</option></select></label><label>Priority<select name="priority"><option>Normal</option><option>Low</option><option>High</option></select></label><label>Issue description<textarea name="description" required maxlength="1500" rows="4"></textarea></label><button class="button-primary" type="submit">Create demo ticket</button><p id="message" role="status" aria-live="polite"></p></form><div class="panel"><h3>Support workflow</h3><ol><li>Receive and record the request</li><li>Categorize and prioritize</li><li>Investigate and document actions</li><li>Resolve and record the outcome</li></ol><p>No response-time guarantee is attached to this demo.</p><label>Filter tickets<select id="filter"><option>All</option><option>New</option><option>In progress</option><option>Resolved</option></select></label><button id="export" type="button" class="button-secondary">Export JSON</button> <button id="clear" type="button" class="button-secondary">Clear demo</button></div></div><div id="tickets"></div></section><footer class="panel"><p>Nexus IT Services · Academic prototype · Charlles Pereira Costa</p><p>Project content adapted from the supplied plan dated 12 October 2026. Hosting, licensing, regional launch strategy and service terms are not finalized here.</p></footer></main></div><script>const key='nexus-project-tickets-v2',message=document.querySelector('#message');let tickets=[];try{const data=JSON.parse(localStorage.getItem(key)||'[]');if(Array.isArray(data))tickets=data.filter(t=>t&&typeof t.id==='string'&&typeof t.description==='string')}catch(e){message.textContent='Storage unavailable or unreadable; using an empty in-memory list.'}function save(){try{localStorage.setItem(key,JSON.stringify(tickets));return true}catch(e){message.textContent='Storage unavailable. Tickets remain only in memory.';return false}}function el(tag,value){const n=document.createElement(tag);n.textContent=value;return n}function render(){const box=document.querySelector('#tickets');box.replaceChildren();const status=document.querySelector('#filter').value;const visible=tickets.filter(t=>status==='All'||t.status===status);if(!visible.length)box.append(el('p','No tickets in this view.'));visible.forEach(t=>{const card=document.createElement('article');card.className='panel';card.style.marginTop='16px';card.append(el('h3',t.id+' · '+t.category),el('p',t.requester+' · '+t.priority),el('p',t.description));const label=el('label','Ticket status'),select=document.createElement('select');['New','In progress','Resolved'].forEach(v=>{const o=el('option',v);o.selected=t.status===v;select.append(o)});select.onchange=()=>{t.status=select.value;save();render()};label.append(select);card.append(label);box.append(card)})}document.querySelector('#ticket-form').onsubmit=e=>{e.preventDefault();const d=new FormData(e.target),requester=d.get('requester').trim(),description=d.get('description').trim();if(!requester||!description){message.textContent='Enter a requester and description containing text.';return}tickets.unshift({id:'NX-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),requester,description,category:d.get('category'),priority:d.get('priority'),status:'New',created:new Date().toISOString()});const saved=save();render();e.target.reset();if(saved)message.textContent='Ticket saved locally. Nothing was sent to a server.'};document.querySelector('#filter').onchange=render;document.querySelector('#clear').onclick=()=>{if(confirm('Delete all demo tickets in this browser?')){tickets=[];save();render()}};document.querySelector('#export').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(tickets,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='nexus-tickets.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};render();</script></body></html>
